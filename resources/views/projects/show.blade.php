@@ -29,6 +29,36 @@
                 </div>
             </div>
 
+            <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg mb-6">
+                <div class="p-6 text-gray-900">
+                    <h3 class="text-lg font-semibold mb-4">Task Statistics</h3>
+                    <div style="display: flex; gap: 2rem; margin-bottom: 1rem;">
+                        <div style="min-width: 80px;">
+                            <div class="text-sm text-gray-500 mb-1">Total</div>
+                            <div class="text-2xl font-bold text-gray-800">{{ $taskStats['total'] }}</div>
+                        </div>
+                        <div style="min-width: 80px;">
+                            <div class="text-sm text-gray-500 mb-1">Completed</div>
+                            <div class="text-2xl font-bold text-green-600">{{ $taskStats['completed'] }}</div>
+                        </div>
+                        <div style="min-width: 80px;">
+                            <div class="text-sm text-gray-500 mb-1">In Progress</div>
+                            <div class="text-2xl font-bold text-yellow-600">{{ $taskStats['in_progress'] }}</div>
+                        </div>
+                        <div style="min-width: 80px;">
+                            <div class="text-sm text-gray-500 mb-1">Pending</div>
+                            <div class="text-2xl font-bold text-gray-600">{{ $taskStats['pending'] }}</div>
+                        </div>
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 0.75rem;">
+                        <div style="flex: 1; background-color: #e5e7eb; border-radius: 9999px; height: 0.5rem; overflow: hidden;">
+                            <div style="background-color: #22c55e; height: 0.5rem; border-radius: 9999px; width: {{ $taskStats['completion_percentage'] }}%;"></div>
+                        </div>
+                        <span class="text-sm font-medium text-gray-600" style="white-space: nowrap;">{{ $taskStats['completion_percentage'] }}% Complete</span>
+                    </div>
+                </div>
+            </div>
+
             <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
                 <div class="p-6 text-gray-900">
                     <div class="flex justify-between items-center mb-4">

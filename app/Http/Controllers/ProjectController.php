@@ -48,7 +48,20 @@ class ProjectController extends Controller
         $this->authorize('view', $project);
         $project->load(['tasks.assignee', 'tasks.comments', 'owner']);
         $isOwner = Auth::id() === $project->owner_id;
-        return view('projects.show', compact('project', 'isOwner'));
+
+        // Task statistics using Laravel Collections
+        $tasks = $project->tasks;
+        $taskStats = [
+            'total' => $tasks->count(),
+            'completed' => $tasks->where('status', 'completed')->count(),
+            'pending' => $tasks->where('status', 'pending')->count(),
+            'in_progress' => $tasks->where('status', 'in_progress')->count(),
+            'completion_percentage' => $tasks->count() > 0 
+                ? round(($tasks->where('status', 'completed')->count() / $tasks->count()) * 100) 
+                : 0,
+        ];
+
+        return view('projects.show', compact('project', 'isOwner', 'taskStats'));
     }
 
     public function edit(Project $project)
