@@ -36,6 +36,7 @@
                                                 {{ $project->tasks_count ?? $project->tasks->count() }} tasks · Created {{ $project->created_at->diffForHumans() }}
                                             </p>
                                         </div>
+                                        @if ($project->owner_id === auth()->id())
                                         <div class="flex space-x-2">
                                             <a href="{{ route('projects.edit', $project) }}" class="text-gray-500 hover:text-blue-600">
                                                 Edit
@@ -46,6 +47,7 @@
                                                 <button type="submit" class="text-gray-500 hover:text-red-600">Delete</button>
                                             </form>
                                         </div>
+                                        @endif
                                     </div>
                                 </div>
                             @endforeach

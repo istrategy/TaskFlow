@@ -5,9 +5,11 @@
                 {{ $project->title }}
             </h2>
             <div class="flex space-x-2">
+                @if ($isOwner)
                 <a href="{{ route('projects.edit', $project) }}" class="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded">
                     Edit
                 </a>
+                @endif
                 <a href="{{ route('projects.index') }}" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
                     Back to Projects
                 </a>
@@ -31,15 +33,27 @@
                 <div class="p-6 text-gray-900">
                     <div class="flex justify-between items-center mb-4">
                         <h3 class="text-lg font-semibold">Tasks</h3>
-                        {{-- Add task button will go here later --}}
+                        @if ($isOwner)
+                        <a href="{{ route('projects.tasks.create', $project) }}"
+                            class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded text-sm">
+                            Add Task
+                        </a>
+                        @endif
                     </div>
 
-                    @if ($project->tasks->isEmpty())
+                    @php
+                        $visibleTasks = $isOwner 
+                            ? $project->tasks 
+                            : $project->tasks->where('assigned_to', auth()->id());
+                    @endphp
+
+                    @if ($visibleTasks->isEmpty())
                         <p class="text-gray-500">No tasks yet.</p>
                     @else
                         <div class="space-y-3">
-                            @foreach ($project->tasks as $task)
-                                <div class="border rounded-lg p-4 flex justify-between items-center">
+                            @foreach ($visibleTasks as $task)
+                                <a href="{{ route('projects.tasks.show', [$project, $task]) }}"
+                                    class="border rounded-lg p-4 flex justify-between items-center hover:bg-gray-50 block">
                                     <div>
                                         <span class="font-medium">{{ $task->title }}</span>
                                         <span class="ml-2 px-2 py-1 text-xs rounded 
@@ -54,7 +68,8 @@
                                             </span>
                                         @endif
                                     </div>
-                                </div>
+                                    <span class="text-gray-400 text-sm">{{ $task->comments->count() }} comments</span>
+                                </a>
                             @endforeach
                         </div>
                     @endif

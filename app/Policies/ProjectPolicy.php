@@ -9,7 +9,13 @@ class ProjectPolicy
 {
     public function view(User $user, Project $project): bool
     {
-        return $user->id === $project->owner_id;
+        // Owner can view
+        if ($user->id === $project->owner_id) {
+            return true;
+        }
+
+        // Workers with assigned tasks can view
+        return $project->tasks()->where('assigned_to', $user->id)->exists();
     }
 
     public function update(User $user, Project $project): bool

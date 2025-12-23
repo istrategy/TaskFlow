@@ -10,7 +10,16 @@ class ProjectController extends Controller
 {
     public function index()
     {
-        $projects = Auth::user()->projects()->latest()->paginate(10);
+        $ownedProjects = Auth::user()->projects()->pluck('id');
+        $assignedProjects = Project::whereHas('tasks', function ($query) {
+            $query->where('assigned_to', Auth::id());
+        })->pluck('id');
+
+        $projects = Project::whereIn('id', $ownedProjects->merge($assignedProjects))
+            ->with('owner')
+            ->latest()
+            ->paginate(10);
+
         return view('projects.index', compact('projects'));
     }
 
@@ -37,8 +46,9 @@ class ProjectController extends Controller
     public function show(Project $project)
     {
         $this->authorize('view', $project);
-        $project->load(['tasks.assignee', 'owner']);
-        return view('projects.show', compact('project'));
+        $project->load(['tasks.assignee', 'tasks.comments', 'owner']);
+        $isOwner = Auth::id() === $project->owner_id;
+        return view('projects.show', compact('project', 'isOwner'));
     }
 
     public function edit(Project $project)
