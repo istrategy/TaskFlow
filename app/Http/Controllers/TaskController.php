@@ -2,11 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\TaskUpdated;
 use App\Models\Project;
 use App\Models\Task;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 
 class TaskController extends Controller
 {
@@ -71,6 +73,9 @@ class TaskController extends Controller
         }
 
         $task->update($validated);
+
+        Log::info('TaskController::update - dispatching TaskUpdated event', ['task_id' => $task->id]);
+        TaskUpdated::dispatch($task);
 
         return redirect()->route('projects.tasks.show', [$project, $task])
             ->with('success', 'Task updated successfully.');
