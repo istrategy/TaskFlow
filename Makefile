@@ -34,6 +34,10 @@ init:
 	./vendor/bin/sail up -d
 	@echo "Generating application key..."
 	./vendor/bin/sail artisan key:generate
+	@echo "Installing NPM dependencies..."
+	./vendor/bin/sail npm install
+	@echo "Building frontend assets..."
+	./vendor/bin/sail npm run build
 	@echo "Running migrations..."
 	./vendor/bin/sail artisan migrate
 	@echo "Running seeders..."
