@@ -22,6 +22,8 @@ down:
 init:
 	@echo "Copying .env file..."
 	@if [ ! -f .env ]; then cp .env.example .env; fi
+	@echo "Fixing vendor permissions if needed..."
+	@if [ -d vendor ]; then sudo chown -R $$(id -u):$$(id -g) vendor 2>/dev/null || true; fi
 	@echo "Installing Composer dependencies (using Docker)..."
 	docker run --rm -u $$(id -u):$$(id -g) -v "$$(pwd)":/app -w /app composer:latest install --ignore-platform-reqs
 	@echo "Setting storage permissions..."
