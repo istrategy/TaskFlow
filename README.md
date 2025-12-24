@@ -1,59 +1,158 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# TaskFlow
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+A Laravel-based project and task management application with team collaboration features.
 
-## About Laravel
+## Project Overview
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+TaskFlow is a comprehensive project management system that allows users to:
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+- Create and manage projects
+- Track tasks with status management (pending, in progress, completed)
+- Assign tasks to team members
+- Add comments to tasks for collaboration
+- View task statistics and completion progress
+- Receive email notifications on task updates
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+## Prerequisites
 
-## Learning Laravel
+Before you begin, ensure you have the following installed:
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework. You can also check out [Laravel Learn](https://laravel.com/learn), where you will be guided through building a modern Laravel application.
+- **Docker** - [Install Docker](https://docs.docker.com/get-docker/)
+- **Docker Compose** - Usually included with Docker Desktop
+- **Make** - For running Makefile commands
+- **Composer** - [Install Composer](https://getcomposer.org/) (for initial setup)
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+## Setup Steps
 
-## Laravel Sponsors
+1. **Clone the repository**
+   ```bash
+   git clone <repository-url>
+   cd TaskFlow
+   ```
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+2. **Initialize the project**
+   ```bash
+   make init
+   ```
+   This command will:
+   - Install Composer dependencies
+   - Copy `.env.example` to `.env`
+   - Start Laravel Sail containers
+   - Generate application key
+   - Run database migrations
+   - Seed the database with demo data
 
-### Premium Partners
+3. **Access the application**
+   
+   Open your browser and navigate to the URLs below.
 
-- **[Vehikl](https://vehikl.com)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Redberry](https://redberry.international/laravel-development)**
-- **[Active Logic](https://activelogic.com)**
+## Access URLs
 
-## Contributing
+| Service | URL |
+|---------|-----|
+| **Application** | http://localhost |
+| **Mailhog (Email Testing)** | http://localhost:8025 |
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+## How to Run Console Commands
 
-## Code of Conduct
+Use the `make artisan` command to run any Laravel Artisan command:
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+```bash
+# Run migrations
+make artisan cmd="migrate"
 
-## Security Vulnerabilities
+# Check migration status
+make artisan cmd="migrate:status"
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+# Generate task report
+make artisan cmd="report:tasks"
 
-## License
+# Export tasks to CSV
+make artisan cmd="report:export"
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+# Clear cache
+make artisan cmd="cache:clear"
+```
+
+### Available Make Targets
+
+| Command | Description |
+|---------|-------------|
+| `make up` | Start containers |
+| `make down` | Stop containers |
+| `make init` | Full project initialization |
+| `make artisan cmd="..."` | Run Artisan commands |
+| `make reset` | Rebuild and reinitialize clean environment |
+| `make logs` | View Laravel logs (tail) |
+| `make help` | Show available targets |
+
+## Example Seeded Credentials
+
+After running `make init` or `make artisan cmd="db:seed"`, you can log in with:
+
+| Field | Value |
+|-------|-------|
+| **Email** | `demo@taskflow.com` |
+| **Password** | `password` |
+
+The seeder also creates:
+- 6 users (1 demo + 5 random)
+- 8 projects
+- ~44 tasks with various statuses
+- ~88 comments
+
+## Implemented Features
+
+### Core Features
+- **User Authentication** - Registration, login, logout with Laravel Breeze
+- **Project Management** - CRUD operations for projects
+- **Task Management** - Create, update, delete tasks with status tracking
+- **Comments System** - Add and delete comments on tasks
+- **Task Assignment** - Assign tasks to team members
+
+### Authorization & Policies
+- Project owners have full control over their projects and tasks
+- Task assignees can view all tasks in assigned projects but only edit their own
+- Users can only delete their own comments
+
+### Events & Notifications
+- `TaskUpdated` event fires when tasks are modified
+- Email notifications sent to assignees on task updates
+- Mailhog integration for email testing
+
+### Console Commands
+- `php artisan report:tasks` - Display task statistics in terminal
+- `php artisan report:export` - Export tasks to CSV file
+
+### Database
+- Eloquent ORM with relationships (User, Project, Task, Comment)
+- Factories and seeders for demo data generation
+- Task history tracking
+
+### Collections & Statistics
+- Task statistics on project pages (total, completed, in progress, pending)
+- Completion percentage with progress bar
+
+## Development
+
+### Starting the Development Server
+```bash
+make up
+```
+
+### Stopping the Server
+```bash
+make down
+```
+
+### Viewing Logs
+```bash
+make logs
+```
+
+### Resetting the Environment
+```bash
+make reset
+```
+This will wipe all data and start fresh with seeded demo data.
+
