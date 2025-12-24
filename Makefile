@@ -20,10 +20,10 @@ down:
 
 # Initialize the project
 init:
-	@echo "Installing Composer dependencies..."
-	composer install
 	@echo "Copying .env file..."
 	@if [ ! -f .env ]; then cp .env.example .env; fi
+	@echo "Installing Composer dependencies (using Docker)..."
+	docker run --rm -v "$$(pwd)":/app -w /app composer:latest install --ignore-platform-reqs
 	@echo "Starting Sail containers..."
 	./vendor/bin/sail up -d
 	@echo "Generating application key..."
