@@ -71,17 +71,11 @@
                         @endif
                     </div>
 
-                    @php
-                        $visibleTasks = $isOwner 
-                            ? $project->tasks 
-                            : $project->tasks->where('assigned_to', auth()->id());
-                    @endphp
-
-                    @if ($visibleTasks->isEmpty())
+                    @if ($project->tasks->isEmpty())
                         <p class="text-gray-500">No tasks yet.</p>
                     @else
                         <div class="space-y-3">
-                            @foreach ($visibleTasks as $task)
+                            @foreach ($project->tasks as $task)
                                 <a href="{{ route('projects.tasks.show', [$project, $task]) }}"
                                     class="border rounded-lg p-4 flex justify-between items-center hover:bg-gray-50 block">
                                     <div>

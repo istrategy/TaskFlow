@@ -5,10 +5,12 @@
                 {{ $task->title }}
             </h2>
             <div class="flex space-x-2">
+                @can('update', $task)
                 <a href="{{ route('projects.tasks.edit', [$project, $task]) }}"
                     class="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded">
                     Edit
                 </a>
+                @endcan
                 <a href="{{ route('projects.show', $project) }}"
                     class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
                     Back to Project

@@ -14,8 +14,8 @@ class TaskPolicy
             return true;
         }
 
-        // Assignee can view their task
-        return $user->id === $task->assigned_to;
+        // Users assigned to ANY task in this project can view all tasks
+        return $task->project->tasks()->where('assigned_to', $user->id)->exists();
     }
 
     public function update(User $user, Task $task): bool

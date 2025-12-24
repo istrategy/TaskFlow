@@ -12,7 +12,7 @@ class CommentController extends Controller
 {
     public function store(Request $request, Project $project, Task $task)
     {
-        $this->authorize('view', $project);
+        $this->authorize('view', $task);
 
         $validated = $request->validate([
             'body' => 'required|string|max:1000',
@@ -29,7 +29,7 @@ class CommentController extends Controller
 
     public function destroy(Project $project, Task $task, Comment $comment)
     {
-        $this->authorize('view', $project);
+        $this->authorize('view', $task);
 
         if ($comment->user_id !== Auth::id()) {
             abort(403, 'You can only delete your own comments.');
