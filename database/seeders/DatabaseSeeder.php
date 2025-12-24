@@ -7,6 +7,7 @@ use App\Models\Project;
 use App\Models\Task;
 use App\Models\User;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\Hash;
 
 class DatabaseSeeder extends Seeder
 {
@@ -15,11 +16,15 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        // Create a demo user with known credentials
-        $demoUser = User::factory()->create([
-            'name' => 'Demo User',
-            'email' => 'demo@taskflow.com',
-        ]);
+        // Create or find demo user with known credentials
+        $demoUser = User::firstOrCreate(
+            ['email' => 'demo@taskflow.com'],
+            [
+                'name' => 'Demo User',
+                'password' => Hash::make('password'),
+                'email_verified_at' => now(),
+            ]
+        );
 
         // Create additional users
         $users = User::factory(5)->create();
