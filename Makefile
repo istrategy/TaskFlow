@@ -32,9 +32,6 @@ init:
 	./vendor/bin/sail up -d
 	@echo "Generating application key..."
 	./vendor/bin/sail artisan key:generate
-	@echo "Clearing caches..."
-	./vendor/bin/sail artisan config:clear
-	./vendor/bin/sail artisan view:clear
 	@echo "Running migrations..."
 	./vendor/bin/sail artisan migrate
 	@echo "Running seeders..."
