@@ -25,10 +25,10 @@
                 <nav class="flex items-center justify-end gap-4">
                     @auth
                         <a
-                            href="{{ url('/dashboard') }}"
+                            href="{{ route('projects.index') }}"
                             class="inline-block px-5 py-1.5 dark:text-[#EDEDEC] border-[#19140035] hover:border-[#1915014a] border text-[#1b1b18] dark:border-[#3E3E3A] dark:hover:border-[#62605b] rounded-sm text-sm leading-normal"
                         >
-                            Dashboard
+                            Projects
                         </a>
                     @else
                         <a
@@ -83,8 +83,8 @@
                     <ul class="flex gap-3 text-sm leading-normal">
                         @auth
                         <li>
-                            <a href="{{ url('/dashboard') }}" class="inline-block dark:bg-[#eeeeec] dark:border-[#eeeeec] dark:text-[#1C1C1A] dark:hover:bg-white dark:hover:border-white hover:bg-blue-700 hover:border-blue-700 px-5 py-1.5 bg-blue-600 rounded-sm border border-blue-600 text-white text-sm leading-normal">
-                                Go to Dashboard
+                            <a href="{{ route('projects.index') }}" class="inline-block dark:bg-[#eeeeec] dark:border-[#eeeeec] dark:text-[#1C1C1A] dark:hover:bg-white dark:hover:border-white hover:bg-blue-700 hover:border-blue-700 px-5 py-1.5 bg-blue-600 rounded-sm border border-blue-600 text-white text-sm leading-normal">
+                                View Projects
                             </a>
                         </li>
                         @else
