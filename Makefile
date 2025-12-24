@@ -26,6 +26,8 @@ init:
 	@if [ -d vendor ]; then sudo chown -R $$(id -u):$$(id -g) vendor 2>/dev/null || true; fi
 	@echo "Installing Composer dependencies (using Docker)..."
 	docker run --rm -u $$(id -u):$$(id -g) -v "$$(pwd)":/app -w /app composer:latest install --ignore-platform-reqs
+	@echo "Creating storage directories..."
+	mkdir -p storage/framework/cache/data storage/framework/sessions storage/framework/views
 	@echo "Setting storage permissions..."
 	chmod -R 775 storage bootstrap/cache
 	@echo "Starting Sail containers..."
