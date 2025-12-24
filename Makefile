@@ -23,11 +23,16 @@ init:
 	@echo "Copying .env file..."
 	@if [ ! -f .env ]; then cp .env.example .env; fi
 	@echo "Installing Composer dependencies (using Docker)..."
-	docker run --rm -v "$$(pwd)":/app -w /app composer:latest install --ignore-platform-reqs
+	docker run --rm -u $$(id -u):$$(id -g) -v "$$(pwd)":/app -w /app composer:latest install --ignore-platform-reqs
+	@echo "Setting storage permissions..."
+	chmod -R 775 storage bootstrap/cache
 	@echo "Starting Sail containers..."
 	./vendor/bin/sail up -d
 	@echo "Generating application key..."
 	./vendor/bin/sail artisan key:generate
+	@echo "Clearing caches..."
+	./vendor/bin/sail artisan config:clear
+	./vendor/bin/sail artisan view:clear
 	@echo "Running migrations..."
 	./vendor/bin/sail artisan migrate
 	@echo "Running seeders..."
