@@ -60,4 +60,13 @@ class User extends Authenticatable
     {
         return $this->hasMany(Comment::class);
     }
+
+    /**
+     * Many-to-many relationship with projects (projects where user is a member).
+     */
+    public function memberProjects()
+    {
+        return $this->belongsToMany(Project::class)
+            ->withTimestamps();
+    }
 }

@@ -23,6 +23,10 @@ Route::middleware('auth')->group(function () {
     Route::resource('projects.tasks', TaskController::class)->except(['index']);
     Route::post('projects/{project}/tasks/{task}/comments', [CommentController::class, 'store'])->name('projects.tasks.comments.store');
     Route::delete('projects/{project}/tasks/{task}/comments/{comment}', [CommentController::class, 'destroy'])->name('projects.tasks.comments.destroy');
+
+    // Project member management routes
+    Route::post('projects/{project}/members', [ProjectController::class, 'addMember'])->name('projects.members.add');
+    Route::delete('projects/{project}/members/{user}', [ProjectController::class, 'removeMember'])->name('projects.members.remove');
 });
 
-require __DIR__.'/auth.php';
+require __DIR__ . '/auth.php';

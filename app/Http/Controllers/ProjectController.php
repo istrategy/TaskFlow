@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Project;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -11,11 +12,15 @@ class ProjectController extends Controller
     public function index()
     {
         $ownedProjects = Auth::user()->projects()->pluck('id');
+
+        // Include member projects
+        $memberProjects = Auth::user()->memberProjects()->pluck('projects.id');
+
         $assignedProjects = Project::whereHas('tasks', function ($query) {
             $query->where('assigned_to', Auth::id());
         })->pluck('id');
 
-        $projects = Project::whereIn('id', $ownedProjects->merge($assignedProjects))
+        $projects = Project::whereIn('id', $ownedProjects->merge($memberProjects)->merge($assignedProjects))
             ->with('owner')
             ->latest()
             ->paginate(10);
@@ -46,7 +51,7 @@ class ProjectController extends Controller
     public function show(Project $project)
     {
         $this->authorize('view', $project);
-        $project->load(['tasks.assignee', 'tasks.comments', 'owner']);
+        $project->load(['tasks.assignee', 'tasks.comments', 'owner', 'members']);
         $isOwner = Auth::id() === $project->owner_id;
 
         // Task statistics using Laravel Collections
@@ -56,8 +61,8 @@ class ProjectController extends Controller
             'completed' => $tasks->where('status', 'completed')->count(),
             'pending' => $tasks->where('status', 'pending')->count(),
             'in_progress' => $tasks->where('status', 'in_progress')->count(),
-            'completion_percentage' => $tasks->count() > 0 
-                ? round(($tasks->where('status', 'completed')->count() / $tasks->count()) * 100) 
+            'completion_percentage' => $tasks->count() > 0
+                ? round(($tasks->where('status', 'completed')->count() / $tasks->count()) * 100)
                 : 0,
         ];
 
@@ -93,5 +98,40 @@ class ProjectController extends Controller
 
         return redirect()->route('projects.index')
             ->with('success', 'Project deleted successfully.');
+    }
+
+    /**
+     * Add a member to the project.
+     */
+    public function addMember(Request $request, Project $project)
+    {
+        $this->authorize('manageMembers', $project);
+
+        $validated = $request->validate([
+            'user_id' => 'required|exists:users,id',
+        ]);
+
+        $user = User::findOrFail($validated['user_id']);
+
+        if ($user->id === $project->owner_id) {
+            return back()->with('error', 'Owner is already a member.');
+        }
+
+        $project->addMember($user);
+
+        return back()->with('success', 'Member added successfully.');
+    }
+
+    /**
+     * Remove a member from the project.
+     */
+    public function removeMember(Project $project, $userId)
+    {
+        $this->authorize('manageMembers', $project);
+
+        $user = User::findOrFail($userId);
+        $project->removeMember($user);
+
+        return back()->with('success', 'Member removed successfully.');
     }
 }
